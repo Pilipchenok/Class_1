@@ -3,6 +3,8 @@
 int** make(int r, int c);
 void output(const int*const* mtx);
 void rm(int** mtx, int r);
+void input(int** mtx, int r, int c);
+void output(const                                                                                                                                                                                                                                                                                                                                                                                                               int*const* mtx, int r, int c);
 
 int main(){
     int rows = 0, cols = 0;
@@ -16,7 +18,11 @@ int main(){
     }catch (const std::bad_alloc &){
         return 2;
     }
-    
+    input(mtx, rows, cols);
+    if(std::cin.fail()){
+        rm(mtx, rows);
+        return 1;
+    }
     output(mtx);
     rm(mtx, rows);
 }
@@ -40,4 +46,21 @@ void rm(int **mtx, int r){
         delete[] mtx[i];
     }
     delete[] mtx;
+}
+
+void input(int** mtx, int r, int c){
+    for(size_t i = 0; i < r; ++i){
+        for(size_t j = 0; i < c; ++j){
+            std::cin >> mtx[i][j];
+        }
+    }
+}
+
+void output(const int*const* mtx, int r, int c){
+    for(size_t i = 0; i < r; ++i){
+        for(size_t j = 0; i < c; ++j){
+            std::cout << mtx[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
 }
