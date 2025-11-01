@@ -1,41 +1,45 @@
 #include <iostream>
 
-int** make(int r, int c);
-void output(const int*const* mtx);
-void rm(int** mtx, int r);
-void input(int** mtx, int r, int c);
-void output(const                                                                                                                                                                                                                                                                                                                                                                                                               int*const* mtx, int r, int c);
+int ** convert(const int * t, size_t n, const size_t * lns, size_t rows);
+void rm(int **mtx, int r);
+void output(const int*const* mtx, const size_t * lns, int rows);
 
 int main(){
-    int rows = 0, cols = 0;
-    std::cin >> rows >> cols;
-    if(std::cin.fail()){
-        return 1;
-    }
-    int** mtx = nullptr;
+    int ** mtx = nullptr;
+    int n = 12;
+    int t[12] = {5, 5, 5, 5, 6, 6, 7, 7, 7, 7, 7, 8};
+    int rows = 4;
+    size_t lns[4] = {4, 2, 5, 1};
     try{
-        mtx = make(rows, cols);
+        mtx = convert(t, n, lns, rows);
+        output(mtx, lns, rows);
     }catch (const std::bad_alloc &){
         return 2;
     }
-    input(mtx, rows, cols);
-    if(std::cin.fail()){
-        rm(mtx, rows);
-        return 1;
-    }
-    output(mtx);
     rm(mtx, rows);
 }
 
-int** make(int r, int c){
-    int ** mtx = new int* [r];
-    for(size_t i = 0; i < r; ++i){
-        //mtx[i] = new int[c];
+int ** convert(const int * t, size_t n, const size_t * lns, size_t rows){
+    int ** mtx = new int* [rows];
+    for(size_t i = 0; i < rows; ++i){
         try{
-            mtx[i] = new int[c];
+            mtx[i] = new int[lns[i]];
         }catch(const std::bad_alloc &){
             rm(mtx, i);
             throw;
+        }
+    }
+
+    size_t k = 0;
+    size_t rows_check = 0;
+    for(size_t i = 0; i < n; ++i){
+        if(rows_check < lns[k]){
+            mtx[k][rows_check] = t[i];
+        }
+        rows_check += 1;
+        if(rows_check == lns[k]){
+            rows_check = 0;
+            k += 1;
         }
     }
     return mtx;
@@ -48,17 +52,9 @@ void rm(int **mtx, int r){
     delete[] mtx;
 }
 
-void input(int** mtx, int r, int c){
-    for(size_t i = 0; i < r; ++i){
-        for(size_t j = 0; i < c; ++j){
-            std::cin >> mtx[i][j];
-        }
-    }
-}
-
-void output(const int*const* mtx, int r, int c){
-    for(size_t i = 0; i < r; ++i){
-        for(size_t j = 0; i < c; ++j){
+void output(const int*const* mtx, const size_t * lns, int rows){
+    for(size_t i = 0; i < rows; ++i){
+        for(size_t j = 0; j < lns[i]; ++j){
             std::cout << mtx[i][j] << " ";
         }
         std::cout << "\n";
